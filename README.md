@@ -29,46 +29,46 @@ The DMA controller is designed to be modular, splitting the configuration (setup
 
 This module acts as the bridge between the CPU and the DMA hardware.
 
-Address Decoding: It reads standard _32-bit_ APB addresses to set up the four DMA channels. It uses specific memory offsets (_0x00_ for _Source_, _0x04_ for _Destination_, _0x08_ for _Count_, _0x0C_ for _Config_) to store the setup data in the correct channel's registers.
+i) Address Decoding: It reads standard _32-bit_ APB addresses to set up the four DMA channels. It uses specific memory offsets (_0x00_ for _Source_, _0x04_ for _Destination_, _0x08_ for _Count_, _0x0C_ for _Config_) to store the setup data in the correct channel's registers.
 
-Data Routing: To give the AHB Master instant access to all configurations at once, it bundles the individual 32-bit registers into wide 128-bit buses (_src_addr, dest_addr, count_addr_).
+ii) Data Routing: To give the AHB Master instant access to all configurations at once, it bundles the individual 32-bit registers into wide 128-bit buses (_src_addr, dest_addr, count_addr_).
 
-Auto-Clearing Start Bit: Writing a '_1_' to Bit 0 of a channel's Config register acts as a "_Start_" button. Once the transfer finishes, the hardware automatically clears this bit back to '_0_', saving the CPU from having to do it manually.
+iii) Auto-Clearing Start Bit: Writing a '_1_' to Bit 0 of a channel's Config register acts as a "_Start_" button. Once the transfer finishes, the hardware automatically clears this bit back to '_0_', saving the CPU from having to do it manually.
 
 
 **B. Round-Robin Arbiter (Channel Management)**: [arbiter](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_arbiter.v)
 
 Since all four channels might ask to transfer data at the exact same time, the Arbiter acts as a traffic controller.
 
-Fair Access: It checks the req (request) signals from all channels. If multiple channels want to transfer data, it grants access one by one using a rotating pointer.
+i) Fair Access: It checks the req (request) signals from all channels. If multiple channels want to transfer data, it grants access one by one using a rotating pointer.
 
-Preventing Starvation: Once a channel finishes its turn, it gets moved to the back of the line. This ensures no single channel hogs the bus and every peripheral gets a fair chance to move its data.
+ii) Preventing Starvation: Once a channel finishes its turn, it gets moved to the back of the line. This ensures no single channel hogs the bus and every peripheral gets a fair chance to move its data.
 
 
 **C. Synchronous FIFO (Data Buffer)**  [fifo](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_fifo_1.v)
 
 The FIFO acts as a temporary storage area between reading data from the source and writing it to the destination.
 
-Structure: It is a circular buffer (_Depth = 4, Width = 32-bit_) that tracks whether it is full or empty to prevent data loss.
+i) Structure: It is a circular buffer (_Depth = 4, Width = 32-bit_) that tracks whether it is full or empty to prevent data loss.
 
-Handling Delays: By buffering the data, it allows the AHB Master to keep reading a burst of data from the source even if the destination memory is temporarily busy or not ready to receive it.
+ii) Handling Delays: By buffering the data, it allows the AHB Master to keep reading a burst of data from the source even if the destination memory is temporarily busy or not ready to receive it.
 
 
 **D. AHB-Lite Master (Execution Master)** [ahb_master](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_ahb_master.v)
 
 This is the core engine that actually moves the data over the AHB bus. It operates using a clear 6-state Finite State Machine (FSM):
 
-_IDLE_: Waits for permission (_grant_) from the Arbiter. Once granted, it loads the channel's configuration.
+i) _IDLE_: Waits for permission (_grant_) from the Arbiter. Once granted, it loads the channel's configuration.
 
-_READ_ADDR_: Sends the source address to the memory.
+ii)_READ_ADDR_: Sends the source address to the memory.
 
-_READ_DATA_: Captures the actual data from the source memory and pushes it into the FIFO.
+iii)_READ_DATA_: Captures the actual data from the source memory and pushes it into the FIFO.
 
-_WRITE_ADDR_: Sends the target destination address to the memory.
+iv) _WRITE_ADDR_: Sends the target destination address to the memory.
 
-_WRITE_DATA_: Pulls data out of the FIFO and writes it to the destination memory.
+v) _WRITE_DATA_: Pulls data out of the FIFO and writes it to the destination memory.
 
-_CHECK_DONE_: Reduces the transfer count by one. If the count hits zero, it signals that the job is done. If not, it loops back to keep moving data.
+vi) _CHECK_DONE_: Reduces the transfer count by one. If the count hits zero, it signals that the job is done. If not, it loops back to keep moving data.
 <img width="508" height="429" alt="block_diagram" src="https://github.com/user-attachments/assets/2dabdcb8-c938-44d2-8e2e-c6a646635df5" />
 
 
