@@ -23,49 +23,53 @@ The architecture features an APB Slave interface dedicated to configuring the DM
 **AHB-Lite (Advanced High-performance Bus):** High-bandwidth, pipelined interface for data movement.
 
 ## 4. System Architecture
-The design is highly modular, consisting of a top-level wrapper [top_level_module](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_top.v) and four primary sub-modules:
+The DMA controller is designed to be modular, splitting the configuration (setup) from the datapath (actual data movement). It uses a top-level wrapper [dma_top](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_top.v)  to connect four main sub-modules:
+
+**A. APB Slave (Configuration Interface)**: [apb_slave](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_apb_slave.v)
+
+This module acts as the bridge between the CPU and the DMA hardware.
+
+Address Decoding: It reads standard _32-bit_ APB addresses to set up the four DMA channels. It uses specific memory offsets (_0x00_ for _Source_, _0x04_ for _Destination_, _0x08_ for _Count_, _0x0C_ for _Config_) to store the setup data in the correct channel's registers.
+
+Data Routing: To give the AHB Master instant access to all configurations at once, it bundles the individual 32-bit registers into wide 128-bit buses (_src_addr, dest_addr, count_addr_).
+
+Auto-Clearing Start Bit: Writing a '_1_' to Bit 0 of a channel's Config register acts as a "_Start_" button. Once the transfer finishes, the hardware automatically clears this bit back to '_0_', saving the CPU from having to do it manually.
 
 
-**A. APB Slave** [apb_slave](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_apb_slave.v)
+**B. Round-Robin Arbiter (Channel Management)**: [arbiter](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_arbiter.v)
 
-Acts as the configuration register file. It decodes the APB address to route data to the specific channel's registers:
+Since all four channels might ask to transfer data at the exact same time, the Arbiter acts as a traffic controller.
 
-_0x00_: Source Address
+Fair Access: It checks the req (request) signals from all channels. If multiple channels want to transfer data, it grants access one by one using a rotating pointer.
 
-_0x04_: Destination Address
-
-_0x08_: Transfer Count
-
-_0x0C_: Control/Status (Bit 0 = Start)
+Preventing Starvation: Once a channel finishes its turn, it gets moved to the back of the line. This ensures no single channel hogs the bus and every peripheral gets a fair chance to move its data.
 
 
-**B. Round-Robin Arbiter** [arbiter](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_arbiter.v)
+**C. Synchronous FIFO (Data Buffer)**  [fifo](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_fifo_1.v)
 
-Monitors the _req_ (start) signals from the 4 channels. If multiple channels request the bus simultaneously, it grants access using a rotating priority pointer to ensure absolute fairness.
+The FIFO acts as a temporary storage area between reading data from the source and writing it to the destination.
+
+Structure: It is a circular buffer (_Depth = 4, Width = 32-bit_) that tracks whether it is full or empty to prevent data loss.
+
+Handling Delays: By buffering the data, it allows the AHB Master to keep reading a burst of data from the source even if the destination memory is temporarily busy or not ready to receive it.
 
 
-**C. Synchronous FIFO**  [fifo](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_fifo_1.v)
+**D. AHB-Lite Master (Execution Master)** [ahb_master](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_ahb_master.v)
 
-A circular buffer (_Depth_ = 4, _Width_ = 32-bit) with full and empty flags. It allows the AHB Master to read a burst of data from the source even if the destination memory is temporarily unready.
+This is the core engine that actually moves the data over the AHB bus. It operates using a clear 6-state Finite State Machine (FSM):
 
+_IDLE_: Waits for permission (_grant_) from the Arbiter. Once granted, it loads the channel's configuration.
 
-**D. AHB-Lite Master** [ahb_master](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_ahb_master.v)
+_READ_ADDR_: Sends the source address to the memory.
 
-The core execution engine. It utilizes a 6-State Finite State Machine (FSM):
+_READ_DATA_: Captures the actual data from the source memory and pushes it into the FIFO.
 
-_IDLE_: Waits for an Arbiter grant and loads configuration.
+_WRITE_ADDR_: Sends the target destination address to the memory.
 
-_READ_ADDR_: Drives the source address onto the AHB bus.
+_WRITE_DATA_: Pulls data out of the FIFO and writes it to the destination memory.
 
-_READ_DATA_: Captures memory data and pushes it to the FIFO.
-
-_WRITE_ADDR_: Drives the destination address.
-
-_WRITE_DATA_: Pops data from the FIFO and writes it to memory.
-
-_CHECK_DONE_: Decrements the count and checks for job completion.
-
-<img width="960" height="493" alt="rtl_schematic" src="https://github.com/user-attachments/assets/041d116a-c669-4d9d-a42e-ca2daafeb203" />
+_CHECK_DONE_: Reduces the transfer count by one. If the count hits zero, it signals that the job is done. If not, it loops back to keep moving data.
+<img width="508" height="429" alt="block_diagram" src="https://github.com/user-attachments/assets/2dabdcb8-c938-44d2-8e2e-c6a646635df5" />
 
 
 ## 5. Verification & Simulation
