@@ -5,7 +5,7 @@ This repository contains the RTL design and verification of a 4-channel Direct M
 The architecture features an APB Slave interface dedicated to configuring the DMA transfer parameters (source address, destination address, and transfer count) and an AHB Master interface responsible for executing high-speed memory reads and writes. To handle simultaneous transfer requests from multiple peripherals, the design incorporates a Round-Robin Arbiter that ensures fair, starvation-free bandwidth allocation across all four channels. Additionally, a synchronous FIFO is integrated into the datapath to buffer data between the source and destination, managing burst transfers and preventing data loss during latency mismatches.
 
 
-## 3. Project Objectives
+## 2. Project Objectives
 
 **Protocol Implementation:** To design and integrate standard AMBA APB (slave) and AHB (master) interfaces, ensuring strict adherence to timing and handshaking protocols.
 
@@ -16,7 +16,7 @@ The architecture features an APB Slave interface dedicated to configuring the DM
 **Functional Verification:** To rigorously test the hardware logic through extensive simulation, validating request/grant signaling, correct memory addressing, and complete data integrity from source to destination.
 
 
-## 2. Key Features
+## 3. Key Features
 **4 Independent Channels:** Supports concurrent configuration of up to 4 distinct data transfer tasks.
 **Round-Robin Arbitration:** Ensures fair bus allocation among competing channels, preventing lower-priority channel starvation.
 **Synchronous FIFO Buffering:** Internal 32-bit x 4-depth FIFO decouples read and write operations, handling memory latency seamlessly.
@@ -24,7 +24,7 @@ The architecture features an APB Slave interface dedicated to configuring the DM
 **APB (Advanced Peripheral Bus):** Low-bandwidth interface for configuring Source, Destination, Count, and Control registers.
 **AHB-Lite (Advanced High-performance Bus):** High-bandwidth, pipelined interface for data movement.
 
-## 3. System Architecture
+## 4. System Architecture
 The design is highly modular, consisting of a top-level wrapper [top_level_module](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_top.v) and four primary sub-modules:
 
 
@@ -70,7 +70,7 @@ _CHECK_DONE_: Decrements the count and checks for job completion.
 <img width="960" height="493" alt="rtl_schematic" src="https://github.com/user-attachments/assets/041d116a-c669-4d9d-a42e-ca2daafeb203" />
 
 
-## 4. Verification & Simulation
+## 5. Verification & Simulation
 The design was verified using a self-checking Top-Level Testbench [tb_top](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/TESTBENCH%20files/tb_dma_top.v) simulated in _QuestaSim_.
 
 **Testbench Features:**
