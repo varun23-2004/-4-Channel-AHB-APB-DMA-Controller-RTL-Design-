@@ -57,7 +57,7 @@ _CHECK_DONE_: Decrements the count and checks for job completion.
 
 
 ## 4. Verification & Simulation
-The design was verified using a self-checking Top-Level Testbench [tb_top](tb_dma_top.v) simulated in _QuestaSim_.
+The design was verified using a self-checking Top-Level Testbench [tb_top](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/TESTBENCH%20files/tb_dma_top.v) simulated in _QuestaSim_.
 
 **Testbench Features:**
 
