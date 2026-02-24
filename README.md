@@ -86,7 +86,17 @@ The design was verified using a self-checking Top-Level Testbench [tb_top](https
 <img width="960" height="489" alt="waveform_top" src="https://github.com/user-attachments/assets/25acb667-92a1-44fd-a83e-196826f56e88" />
 
 
-## REGISTER MAP
+## 6. Register Map
+
+In System-on-Chip (SoC) design, a register map acts as the software-to-hardware interface. It defines the specific memory addresses that a processor (CPU) must read or write to in order to configure, control, and monitor a hardware peripheral. Here is what the register map is exactly doing in our_ apb_slave_
+
+**Stores Channel Configurations**: It captures the 32-bit data (_pwdata_) sent by the CPU and stores it into specific internal 2D array registers (_reg_src_, _reg_dest_, _reg_count_,_ reg_config_) based on the decoded address.
+
+**Flattens Data for the DMA Engine**: It takes those individual 32-bit registers for all 4 channels and concatenates them into massive 128-bit wide output buses (_src_addr_,_ dest_addr_, _count_addr_). This gives the AHB master and Arbiter immediate, parallel access to all configurations at once, rather than making them wait to read a memory array.
+
+**Translates Software Writes to Hardware Triggers**: It continuously extracts bit 0 from each channel's reg_config and groups them into the 4-bit req output signal. This allows a simple software register write to instantly become a physical hardware request to the arbiter.
+
+Manages Hardware-to-Software Feedback: It monitors the 4-bit done input signal coming back from the DMA engine. When a channel completes its transfer, the register map automatically resets that specific channel's request bit back to 0 (_reg_config[i][0] <= 1'b0_). This prevents the CPU from needing to manually clear the bit.
 
 
 | Offset | Register Name | R/W | Description                                                      |
