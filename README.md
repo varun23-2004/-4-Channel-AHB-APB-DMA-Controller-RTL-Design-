@@ -11,9 +11,10 @@ This project implements a synthesizable, 4-Channel Direct Memory Access (DMA) Co
 **AHB-Lite (Advanced High-performance Bus):** High-bandwidth, pipelined interface for data movement.
 
 ## 3. System Architecture
-The design is highly modular, consisting of a top-level wrapper [top_level_module](dma_top.v) and four primary sub-modules:
+The design is highly modular, consisting of a top-level wrapper [top_level_module](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_top.v) and four primary sub-modules:
 
-**A. APB Slave** [apb_slave](dma_apb_slave.v)
+
+**A. APB Slave** [apb_slave](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_apb_slave.v)
 
 Acts as the configuration register file. It decodes the APB address to route data to the specific channel's registers:
 
@@ -25,14 +26,19 @@ _0x08_: Transfer Count
 
 _0x0C_: Control/Status (Bit 0 = Start)
 
-**B. Round-Robin Arbiter** [arbiter](dma_arbiter.v)
+
+**B. Round-Robin Arbiter** [arbiter](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_arbiter.v)
 
 Monitors the _req_ (start) signals from the 4 channels. If multiple channels request the bus simultaneously, it grants access using a rotating priority pointer to ensure absolute fairness.
 
-**C. Synchronous FIFO**  [fifo](dma_fifo_1.v)
+
+**C. Synchronous FIFO**  [fifo](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_fifo_1.v)
+
 A circular buffer (_Depth_ = 4, _Width_ = 32-bit) with full and empty flags. It allows the AHB Master to read a burst of data from the source even if the destination memory is temporarily unready.
 
-**D. AHB-Lite Master** [ahb_master](dma_ahb_master.v)
+
+**D. AHB-Lite Master** [ahb_master](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_ahb_master.v)
+
 The core execution engine. It utilizes a 6-State Finite State Machine (FSM):
 
 _IDLE_: Waits for an Arbiter grant and loads configuration.
