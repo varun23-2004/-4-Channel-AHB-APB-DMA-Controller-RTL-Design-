@@ -47,13 +47,21 @@ _WRITE_DATA_: Pops data from the FIFO and writes it to memory.
 
 _CHECK_DONE_: Decrements the count and checks for job completion.
 
+<img width="960" height="493" alt="rtl_schematic" src="https://github.com/user-attachments/assets/041d116a-c669-4d9d-a42e-ca2daafeb203" />
+
+
 ## 4. Verification & Simulation
 The design was verified using a self-checking Top-Level Testbench [tb_top](tb_dma_top.v) simulated in _QuestaSim_.
 
 **Testbench Features:**
 
-**APB BFM (Bus Functional Model):** Uses Verilog task routines to emulate CPU configuration writes.
+**APB BFM (Bus Functional Model):** Uses Verilog task routines to emulate CPU configuration writes. <img width="960" height="470" alt="apb" src="https://github.com/user-attachments/assets/9ccb6de8-e11c-41b1-8257-7425fffe1b0d" />
+
 
 **AHB Memory Model:** Simulates a pipelined RAM (RAM like) array that responds to _HTRANS_, _HADDR_, and _HWDATA_ with realistic latency (_HREADY_).
+<img width="958" height="476" alt="ahb" src="https://github.com/user-attachments/assets/3178b5c5-c3de-480a-b5ef-5e546f33717e" />
 
-**Self-Checking Logic:** Automatically verifies data integrity by comparing the final destination memory contents against the original source data, outputting a _SUCCESS _banner upon passing.
+
+**Self-Checking Logic:** Automatically verifies data integrity by comparing the final destination memory contents against the original source data, outputting a _SUCCESS_ banner upon passing.
+<img width="960" height="489" alt="waveform_top" src="https://github.com/user-attachments/assets/25acb667-92a1-44fd-a83e-196826f56e88" />
+
