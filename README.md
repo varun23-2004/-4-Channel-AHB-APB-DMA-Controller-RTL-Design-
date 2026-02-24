@@ -88,8 +88,8 @@ The design was verified using a self-checking Top-Level Testbench [tb_top](https
 
 ## REGISTER MAP
 
-| ## REGISTER FILE |
-|------------------|
+
+|------------------|---------------|-----|------------------------------------------------------------------|
 | Offset           | Register Name | R/W | Description                                                      |
 | 0x00             | CH0_SRC_ADDR  | R/W | Channel 0: Source Memory Address                                 |
 | 0x04             | CH0_DEST_ADDR | R/W | Channel 0: Destination Memory Address                            |
@@ -107,3 +107,4 @@ The design was verified using a self-checking Top-Level Testbench [tb_top](https
 | 0x34             | CH3_DEST_ADDR | R/W | Channel 3: Destination Memory Address                            |
 | 0x38             | CH3_COUNT     | R/W | Channel 3: Transfer Count / Bytes                                |
 | 0x3C             | CH3_CONFIG    | R/W | Channel 3: Configuration & Control. Bit [0]: DMA Request Enable. |
+|------------------|---------------|-----|------------------------------------------------------------------|
