@@ -13,8 +13,6 @@ The architecture features an APB Slave interface dedicated to configuring the DM
 
 **Data Flow Management:** To implement FIFO-based buffering to safely handle high-throughput burst data between read and write domains.
 
-**Functional Verification:** To rigorously test the hardware logic through extensive simulation, validating request/grant signaling, correct memory addressing, and complete data integrity from source to destination.
-
 
 ## 3. Key Features
 **4 Independent Channels:** Supports concurrent configuration of up to 4 distinct data transfer tasks.
