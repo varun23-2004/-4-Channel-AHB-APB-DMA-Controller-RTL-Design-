@@ -82,25 +82,28 @@ The design was verified using a self-checking Top-Level Testbench [tb_top](https
 <img width="958" height="476" alt="ahb" src="https://github.com/user-attachments/assets/3178b5c5-c3de-480a-b5ef-5e546f33717e" />
 
 
-## REGISTER FILE
-Offset	Register Name	R/W	Description
-0x00	CH0_SRC_ADDR	R/W	Channel 0: Source Memory Address
-0x04	CH0_DEST_ADDR	R/W	Channel 0: Destination Memory Address
-0x08	CH0_COUNT	R/W	Channel 0: Transfer Count / Bytes
-0x0C	CH0_CONFIG	R/W	Channel 0: Configuration & Control. Bit [0]: DMA Request Enable.
-0x10	CH1_SRC_ADDR	R/W	Channel 1: Source Memory Address
-0x14	CH1_DEST_ADDR	R/W	Channel 1: Destination Memory Address
-0x18	CH1_COUNT	R/W	Channel 1: Transfer Count / Bytes
-0x1C	CH1_CONFIG	R/W	Channel 1: Configuration & Control. Bit [0]: DMA Request Enable.
-0x20	CH2_SRC_ADDR	R/W	Channel 2: Source Memory Address
-0x24	CH2_DEST_ADDR	R/W	Channel 2: Destination Memory Address
-0x28	CH2_COUNT	R/W	Channel 2: Transfer Count / Bytes
-0x2C	CH2_CONFIG	R/W	Channel 2: Configuration & Control. Bit [0]: DMA Request Enable.
-0x30	CH3_SRC_ADDR	R/W	Channel 3: Source Memory Address
-0x34	CH3_DEST_ADDR	R/W	Channel 3: Destination Memory Address
-0x38	CH3_COUNT	R/W	Channel 3: Transfer Count / Bytes
-0x3C	CH3_CONFIG	R/W	Channel 3: Configuration & Control. Bit [0]: DMA Request Enable.
-
 **Self-Checking Logic:** Automatically verifies data integrity by comparing the final destination memory contents against the original source data, outputting a _SUCCESS_ banner upon passing.
 <img width="960" height="489" alt="waveform_top" src="https://github.com/user-attachments/assets/25acb667-92a1-44fd-a83e-196826f56e88" />
 
+
+## REGISTER MAP
+
+| ## REGISTER FILE |
+|------------------|
+| Offset           | Register Name | R/W | Description                                                      |
+| 0x00             | CH0_SRC_ADDR  | R/W | Channel 0: Source Memory Address                                 |
+| 0x04             | CH0_DEST_ADDR | R/W | Channel 0: Destination Memory Address                            |
+| 0x08             | CH0_COUNT     | R/W | Channel 0: Transfer Count / Bytes                                |
+| 0x0C             | CH0_CONFIG    | R/W | Channel 0: Configuration & Control. Bit [0]: DMA Request Enable. |
+| 0x10             | CH1_SRC_ADDR  | R/W | Channel 1: Source Memory Address                                 |
+| 0x14             | CH1_DEST_ADDR | R/W | Channel 1: Destination Memory Address                            |
+| 0x18             | CH1_COUNT     | R/W | Channel 1: Transfer Count / Bytes                                |
+| 0x1C             | CH1_CONFIG    | R/W | Channel 1: Configuration & Control. Bit [0]: DMA Request Enable. |
+| 0x20             | CH2_SRC_ADDR  | R/W | Channel 2: Source Memory Address                                 |
+| 0x24             | CH2_DEST_ADDR | R/W | Channel 2: Destination Memory Address                            |
+| 0x28             | CH2_COUNT     | R/W | Channel 2: Transfer Count / Bytes                                |
+| 0x2C             | CH2_CONFIG    | R/W | Channel 2: Configuration & Control. Bit [0]: DMA Request Enable. |
+| 0x30             | CH3_SRC_ADDR  | R/W | Channel 3: Source Memory Address                                 |
+| 0x34             | CH3_DEST_ADDR | R/W | Channel 3: Destination Memory Address                            |
+| 0x38             | CH3_COUNT     | R/W | Channel 3: Transfer Count / Bytes                                |
+| 0x3C             | CH3_CONFIG    | R/W | Channel 3: Configuration & Control. Bit [0]: DMA Request Enable. |
