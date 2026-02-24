@@ -1,6 +1,20 @@
 # 4-Channel-AHB-APB-DMA-Controller-RTL-Design-
 ## 1. Overview
-This project implements a synthesizable, 4-Channel Direct Memory Access (DMA) Controller in Verilog. The DMA offloads data transfer operations from the CPU, allowing high-speed Memory-to-Memory copies. It features an AMBA APB Slave interface for CPU configuration and a pipelined AMBA AHB-Lite Master interface for executing memory transfers.
+This repository contains the RTL design and verification of a 4-channel Direct Memory Access (DMA) Controller, built around the ARM AMBA protocol suite. The DMA controller acts as a bridge to offload heavy data-transfer tasks from the main CPU, thereby significantly increasing overall System-on-Chip (SoC) efficiency.
+
+The architecture features an APB Slave interface dedicated to configuring the DMA transfer parameters (source address, destination address, and transfer count) and an AHB Master interface responsible for executing high-speed memory reads and writes. To handle simultaneous transfer requests from multiple peripherals, the design incorporates a Round-Robin Arbiter that ensures fair, starvation-free bandwidth allocation across all four channels. Additionally, a synchronous FIFO is integrated into the datapath to buffer data between the source and destination, managing burst transfers and preventing data loss during latency mismatches.
+
+
+## 3. Project Objectives
+
+**Protocol Implementation:** To design and integrate standard AMBA APB (slave) and AHB (master) interfaces, ensuring strict adherence to timing and handshaking protocols.
+
+**Fair Data Arbitration**: To develop a robust 4-channel round-robin arbitration mechanism that successfully manages concurrent peripheral requests without dropping or stalling active transfers.
+
+**Data Flow Management:** To implement FIFO-based buffering to safely handle high-throughput burst data between read and write domains.
+
+**Functional Verification:** To rigorously test the hardware logic through extensive simulation, validating request/grant signaling, correct memory addressing, and complete data integrity from source to destination.
+
 
 ## 2. Key Features
 **4 Independent Channels:** Supports concurrent configuration of up to 4 distinct data transfer tasks.
