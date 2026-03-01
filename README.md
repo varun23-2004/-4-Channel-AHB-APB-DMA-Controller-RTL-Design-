@@ -27,7 +27,10 @@ The DMA controller is designed to be modular, splitting the configuration (setup
 
 **A. APB Slave (Configuration Interface)**: [apb_slave](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_apb_slave.v)
 
-This module acts as the bridge between the CPU and the DMA hardware.
+This module acts as the bridge between the CPU and the DMA hardware. 
+
+
+This is the entry point for the CPU. Before any data transfer happens, the CPU needs to tell the DMA — where to read from, where to write to, and how many times. The APB Slave receives all of this configuration over the APB bus and stores it into registers for each channel. It also has a start bit — when the CPU writes a 1 to it, the transfer begins. Once the transfer is done, the hardware automatically clears that bit so the CPU doesn't have to do it manually.
 
 i) Address Decoding: It reads standard _32-bit_ APB addresses to set up the four DMA channels. It uses specific memory offsets (_0x00_ for _Source_, _0x04_ for _Destination_, _0x08_ for _Count_, _0x0C_ for _Config_) to store the setup data in the correct channel's registers.
 
@@ -40,6 +43,8 @@ iii) Auto-Clearing Start Bit: Writing a '_1_' to Bit 0 of a channel's Config reg
 
 Since all four channels might ask to transfer data at the exact same time, the Arbiter acts as a traffic controller.
 
+Since it have 4 channels, all 4 could request a transfer at the same time. The arbiter decides who gets the bus first. It does this fairly — each channel gets a turn one by one in a rotating order, so no single channel can block the others indefinitely. Think of it as a traffic signal for the 4 channels.
+
 i) Fair Access: It checks the req (request) signals from all channels. If multiple channels want to transfer data, it grants access one by one using a rotating pointer.
 
 ii) Preventing Starvation: Once a channel finishes its turn, it gets moved to the back of the line. This ensures no single channel hogs the bus and every peripheral gets a fair chance to move its data.
@@ -49,12 +54,16 @@ ii) Preventing Starvation: Once a channel finishes its turn, it gets moved to th
 
 The FIFO acts as a temporary storage area between reading data from the source and writing it to the destination.
 
+This sits between the read side and the write side of the data path. When the AHB Master reads data from the source memory, it pushes it into the FIFO. The FIFO holds it temporarily until the destination memory is ready to accept it. Without this, if the destination is even slightly delayed, you'd lose data. The FIFO absorbs that timing mismatch and keeps the flow safe.
+
 i) Structure: It is a circular buffer (_Depth = 4, Width = 32-bit_) that tracks whether it is full or empty to prevent data loss.
 
 ii) Handling Delays: By buffering the data, it allows the AHB Master to keep reading a burst of data from the source even if the destination memory is temporarily busy or not ready to receive it.
 
 
 **D. AHB-Lite Master (Execution Master)** [ahb_master](https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-/blob/main/RTL%20files/dma_ahb_master.v)
+
+This is the actual engine that moves the data. Once the arbiter grants it permission, it takes the channel configuration from the APB Slave, goes to the source address, reads the data, pushes it into the FIFO, then picks it back up and writes it to the destination address. It does this repeatedly until the transfer count hits zero. 
 
 This is the core engine that actually moves the data over the AHB bus. It operates using a clear 6-state Finite State Machine (FSM):
 
