@@ -120,3 +120,21 @@ Manages Hardware-to-Software Feedback: It monitors the 4-bit done input signal c
 | 0x38   | CH3_COUNT     | R/W | Channel 3: Transfer Count / Bytes                                |
 | 0x3C   | CH3_CONFIG    | R/W | Channel 3: Configuration & Control. Bit [0]: DMA Request Enable. |
 
+
+## 7. HOW TO STIMULATE 
+
+1. Clone the repository
+   git clone https://github.com/varun23-2004/-4-Channel-AHB-APB-DMA-Controller-RTL-Design-
+
+2. Open QuestaSim
+
+3. Compile all RTL files from the /RTL files/ directory
+
+4. Compile the testbench from /TESTBENCH files/tb_dma_top.v
+
+5. Run the simulation — a SUCCESS banner will be printed in the transcript if all transfers pass verification
+
+## Tools Used
+- Language  : Verilog 
+- Simulator : QuestaSim 
+- Protocols : AMBA APB (Slave) | AMBA AHB-Lite (Master)
