@@ -67,26 +67,26 @@ begin
 	case (grant)
 		4'b0001: begin
 			next_src= src_addr_flat[31:0];
-			next_dest= dest_addr_flat[31:0];
-			next_count= count_flat[31:0];
+			next_dest= src_addr_flat[31:0];
+			next_count= dest_flat[31:0];
 			channel_idx=2'd0;
 			end
 		4'b0010: begin
 			next_src= src_addr_flat[63:32];
-			next_dest= dest_addr_flat[63:32];
-			next_count= count_flat[63:32];
+			next_dest= src_addr_flat[63:32];
+			next_count= dest_flat[63:32];
 			channel_idx=2'd1;
 			end
 		4'b0100: begin
 			next_src= src_addr_flat[95:64];
-			next_dest= dest_addr_flat[95:64];
-			next_count= count_flat [95:64];
+			next_dest= src_addr_flat[95:64];
+			next_count= dest_flat [95:64];
 			channel_idx=2'd2;
 			end
 		4'b1000: begin 
 			next_src= src_addr_flat[127:96];
-			next_dest= dest_addr_flat[127:96];
-			next_count= count_flat[127:96];
+			next_dest= src_addr_flat[127:96];
+			next_count= dest_flat[127:96];
 			channel_idx=2'd3;
 			end
 		default: begin
