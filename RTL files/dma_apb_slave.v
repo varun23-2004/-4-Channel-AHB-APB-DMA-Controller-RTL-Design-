@@ -46,7 +46,7 @@ begin
 		for(i=0;i<4;i=i+1)
 		begin
 			reg_src[i]<=32'd0;
-			reg_dest[i]<=32'd0;
+			reg_count[i]<=32'd0;
 			reg_count[i]<=32'd0;
 			reg_config[i]<=32'd0;
 		end
@@ -62,7 +62,7 @@ begin
 		begin
 			case (reg_id)
 				2'b00: reg_src[ch_id]<=pwdata;
-				2'b01: reg_dest[ch_id]<=pwdata;
+				2'b01: reg_count[ch_id]<=pwdata;
 				2'b10: reg_count[ch_id]<=pwdata;
 				2'b11: reg_config[ch_id]<=pwdata;
 				default: ;
