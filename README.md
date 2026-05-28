@@ -16,10 +16,15 @@ The architecture features an APB Slave interface dedicated to configuring the DM
 
 ## 3. Key Features
 **4 Independent Channels:** Supports concurrent configuration of up to 4 distinct data transfer tasks.
+
 **Round-Robin Arbitration:** Ensures fair bus allocation among competing channels, preventing lower-priority channel starvation.
+
 **Synchronous FIFO Buffering:** Internal 32-bit x 4-depth FIFO decouples read and write operations, handling memory latency seamlessly.
+
 **Standard AMBA Protocols:**
+
 **APB (Advanced Peripheral Bus):** Low-bandwidth interface for configuring Source, Destination, Count, and Control registers.
+
 **AHB-Lite (Advanced High-performance Bus):** High-bandwidth, pipelined interface for data movement.
 
 ## 4. System Architecture
