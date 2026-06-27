@@ -83,7 +83,7 @@ iv) _WRITE_ADDR_: Sends the target destination address to the memory.
 v) _WRITE_DATA_: Pulls data out of the FIFO and writes it to the destination memory.
 
 vi) _CHECK_DONE_: Reduces the transfer count by one. If the count hits zero, it signals that the job is done. If not, it loops back to keep moving data.
-<img width="750" height="550" alt="block_diagram" src="https://github.com/user-attachments/assets/2dabdcb8-c938-44d2-8e2e-c6a646635df5" />
+<img width="1000" height="750" alt="block_diagram" src="https://github.com/user-attachments/assets/2dabdcb8-c938-44d2-8e2e-c6a646635df5" />
 
 
 ## 5. Verification & Simulation
