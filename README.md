@@ -144,7 +144,7 @@ Manages Hardware-to-Software Feedback: It monitors the 4-bit done input signal c
 
 3. Compile all RTL files from the /RTL files/ directory
 
-4. Compile the testbench from /TESTBENCH files/tb_dma_top.v
+4. Compile the testbench from /TESTBENCH files/ directory
 
 5. Run the simulation — a SUCCESS banner will be printed in the transcript if all transfers pass verification
 
